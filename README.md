@@ -21,8 +21,8 @@ The **Dashboard** is the user interface that allows you to monitor and control t
 
 ## PID Results
 <div align="center">
-    <img src="images/PID_tuned_results.png" alt="PID_tuned_results"  height="200"/>
-    <img src="images/plot_parameters_errors.png" alt="plot_parameters_errors" height="250"/>
+    <img src="images/PID_tuned_results.png" alt="PID_tuned_results"  height="300"/>
+    <img src="images/plot_parameters_errors.png" alt="plot_parameters_errors" height="300"/>
 </div>
 
 ### Reinforcement Learning Model
