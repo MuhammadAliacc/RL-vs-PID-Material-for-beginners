@@ -8,16 +8,16 @@ Implementation is based on simulation as well as on hardware.
 </div>
 
 ## Dashboard Overview
-<div align="center">
-    <img src="images/Dashboard.png" alt="Dashboard" height="300"/>
-</div>
-
 The **Dashboard** is the user interface that allows you to monitor and control the ball-beam system in real time. The dashboard offers the following functionalities:
 
 - **Select Options**: Choose between testing and training the RL agent or using a **PID controller** to manage the system.
 - **Start and Stop Process**: Initiate or halt the control process after configuring the necessary parameters.
 - **Settings**: Customize settings to fine-tune the system's behavior, including PID parameters or RL training parameters.
 - **Logs**: View real-time logs to track the system's status, errors, and performance during operation.
+
+<div align="center">
+    <img src="images/Dashboard.png" alt="Dashboard" height="300"/>
+</div>
 
 ## PID Results
 <div align="center">
