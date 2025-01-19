@@ -19,15 +19,13 @@ The **Dashboard** is the user interface that allows you to monitor and control t
 - **Settings**: Customize settings to fine-tune the system's behavior, including PID parameters or RL training parameters.
 - **Logs**: View real-time logs to track the system's status, errors, and performance during operation.
 
-## Features
-
-### PID
+## PID Results
 <div align="center">
     <img src="images/PID_tuned_results.png" alt="PID_tuned_results"  height="200"/>
 </div>
 
-### Optimisation of PID Hyperparameter 
 <div align="center">
+    ### Optimisation of PID Hyperparameter 
     <img src="images/plot_parameters_errors.png" alt="plot_parameters_errors" height="250"/>
 </div>
 
