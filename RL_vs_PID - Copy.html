@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ball Beam Control System: PID vs RL</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            padding: 30px;
+            border-left: 10px solid #000;  /* Left side border */
+            border-right: 10px solid #000; /* Right side border */
+            padding-bottom: 50px; /* Adds space at the bottom of the page */
+
+        }
+        header {
+            background-color: #54854b;
+            color: white;
+            padding: 0.03px 0;
+            text-align: center;
+        }
+        footer {
+            font-size: 12px; /* Reduces text size */
+            padding: 10px; /* Provides spacing inside the footer */
+            text-align: center; /* Centers text */
+            position: relative;
+            margin-top: 20px; /* Optional: add margin to create space above */
+        }
+        /* Two-column layout */
+        .row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .column {
+            width: 48%; /* Each column takes up 48% of the width */
+            box-sizing: border-box;
+        }
+
+        img {
+            width: auto;
+            /* height: auto; */
+            max-height: 300px;
+            max-width: 400px;
+            display: block;
+            margin: 20px auto;
+
+        }
+
+        section {
+            padding: 20px;
+        }
+
+        h2 {
+            color: #333;
+            margin-top: 1px; /* Reduce space above the heading */
+            margin-bottom: 0.1px; /* Reduce space below the heading */
+            padding: 0; /* Remove any extra padding */
+        }
+        h3 {
+            color: #333;
+            margin-top: 0.1px; /* Reduce space above the heading */
+            margin-bottom: 0.1px; /* Reduce space below the heading */
+            padding: 0; /* Remove any extra padding */
+        }
+        .code {
+            background-color: #282c34;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: "Courier New", Courier, monospace;
+            overflow-x: auto;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Ball Beam Control System: PID vs RL</h1>
+</header>
+
+<section>
+    <div class="container">
+        <section>
+            <h2>Introduction</h2>
+            <p>This project aims to control a ball on a beam using both PID control and Reinforcement Learning (RL). The objective is to compare the two methods in terms of performance and suitability for real-time control in both simulation and hardware environments.</p>
+            <img src="images/Dashboard.png" alt="Ball Beam Control System" style="width: 95%; height: auto; margin-bottom: 0px;">
+        </section>
+        <section>
+            <h2>Dashboard</h2>
+            <p>The dashboard provides a user-friendly interface for real-time monitoring and control of the ball beam control system. It offers the following key features:</p>
+            <ul>
+                <li><b>Select Options:</b> Choose between testing and training the Reinforcement Learning (RL) agent or using the PID controller to manage the system.</li>
+                <li><b>Start and Stop Process:</b> After configuring the necessary parameters, initiate or halt the control process directly from the dashboard.</li>
+                <li><b>Settings:</b> Customize additional settings to fine-tune the system’s behavior, such as adjusting PID parameters or RL training parameters.</li>
+                <li><b>Logs:</b> View real-time logs to track the system's status, errors, and performance during operation.</li>
+            </ul>
+        </section>
+        <!-- Two-column section for Hardware and Simulation -->
+        <section>
+            <h2>Hardware vs Simulation</h2>
+            <div class="row">
+                <!-- Hardware Column -->
+                <div class="column">
+                    <h3>Hardware Setup</h3>
+                    <p>The hardware setup includes a physical beam, a motor, and a sensor to detect the ball position camera is being used in this case. A DC motor or servo motor for controlling the beam's angle. A Flask server is used to send commands to the actuator based on the control algorithm (PID or RL).</p>
+                    <img src="https://www.gurski.biz/Ball/24c.jpg" alt="Hardware Setup">
+                </div>
+
+                <!-- Simulation Column -->
+                <div class="column">
+                    <h3>Simulation</h3>
+                    <p>The simulation environment replicates the real-world setup using a software model. It allows us to test and optimize the PID controller and RL agent before deploying them to the hardware. The simulation provides a safe environment for experimenting with various control strategies.</p>
+                    <img src="images/simulation.png" alt="Simulation Model">
+                </div>
+            </div>
+        </section>
+    </div>
+
+</section>
+
+
+<section>
+    <h2>PID Control</h2>
+    <p>PID control adjusts the beam angle based on the current position of the ball. The control algorithm uses three components:</p>
+    <ul>
+        <li><b>Proportional (P):</b> Corrects based on the current error (distance from the setpoint).</li>
+        <li><b>Integral (I):</b> Corrects accumulated past errors to eliminate steady-state errors.</li>
+        <li><b>Derivative (D):</b> Corrects based on the rate of change of the error to anticipate future behavior.</li>
+    </ul>
+    <h3>PID Optimization</h3>
+    <p>
+        The PID parameters (Kp, Ki, Kd) are tuned through experimentation using optimization algorithms, specifically from the <strong>scipy optimization library</strong>. The goal is to find the best values for the proportional (Kp), integral (Ki), and derivative (Kd) gains that minimize the error in the system. To achieve this, we utilize the <strong>Powell method</strong>, a derivative-free optimization technique that is well-suited for complex or noisy objective functions.
+    </p>
+    <p>
+        The optimization process is conducted in two stages: first, in a <strong>simulation environment</strong>, where the PID controller’s performance can be tested and adjusted without the risk of hardware damage; and second, on the <strong>hardware system</strong>, where real-time feedback is gathered and further adjustments are made to ensure the controller operates efficiently in a physical setup.
+    </p>
+    <ul>
+        <li><b>In Simulation:</b> Tuning is faster and safer as it doesn’t affect hardware directly.</li>
+        <li><b>In Hardware:</b> Real-world effects such as friction and motor delays can affect performance.</li>
+    </ul>
+    <h3>PID Performance Comparison</h3>
+    <p>Performance in simulation often differs from hardware due to physical limitations. The PID controller in hardware may need fine-tuning based on environmental factors like noise, friction, and hardware delays.</p>
+</section>
+
+<section>
+    <h2>Reinforcement Learning</h2>
+
+    <p id="RL_description"> Though both supervised and reinforcement learning use mapping between input and output, unlike supervised learning where the feedback provided to the agent is correct set of actions for performing a task, reinforcement learning uses rewards and punishments as signals for positive and negative behavior.
+
+     As compared to unsupervised learning, reinforcement learning is different in terms of goals. While the goal in unsupervised learning is to find similarities and differences between data points, in the case of reinforcement learning the goal is to find a suitable action model that would maximize the total cumulative reward of the agent. The figure below illustrates the action-reward feedback loop of a generic RL model.</p>
+    
+    <div style="text-align: center;">
+    <img src="https://miro.medium.com/v2/resize:fit:1400/format:webp/1*7cuAqjQ97x1H_sBIeAVVZg.png" alt="RL Agent">
+    </div>
+
+    <p>In reinforcement learning (RL), an agent interacts with the environment to learn how to achieve its goal by maximizing a reward function. The ball-beam system's RL agent learns to balance the ball by adjusting the beam's angle.</p>
+    <h3>Creating the RL Environment</h3>
+    <p>The RL environment is defined using the `gym` library or a custom-built environment. The state space typically includes variables like the ball's position and velocity, while the action space corresponds to the possible adjustments to the beam's angle.</p>
+    <h3>RL Interaction with the Environment</h3>
+    <p>The agent takes an action (adjusts the beam) and receives feedback in the form of a reward, based on the ball's position relative to the setpoint. Over time, the agent learns to maximize the reward, stabilizing the ball more efficiently.</p>
+    <h3>RL Model Architecture</h3>
+    <p>The RL model can use algorithms like Deep Q-Network (DQN) or Proximal Policy Optimization (PPO), with a neural network architecture to approximate the value function or policy.</p>
+</section>
+
+<section>
+    <h2>Flask Server Integration</h2>
+    <p>The Flask server serves as the communication bridge between the RL/PID controllers and the hardware. The Flask server sends control commands to the actuator, and receives feedback from the sensors. The server allows for real-time control and monitoring of the system.</p>
+    <h3>Communication Between RL/PID and Hardware</h3>
+    <p>The Flask server runs on a separate PC, which is connected to the hardware. The RL and PID controllers run on another PC, communicating with the Flask server via HTTP requests. The server sends the necessary control commands to the hardware, allowing for seamless control from either algorithm.</p>
+    <img src="flask_server_architecture.jpg" alt="Flask Server Architecture">
+</section>
+
+<section>
+    <h2>Comparison: PID vs. RL</h2>
+    <p>The performance of PID and RL controllers is compared based on their ability to stabilize the ball in both simulation and hardware:</p>
+    <ul>
+        <li><b>Simulation:</b> RL typically outperforms PID due to its adaptability and ability to learn from the environment. PID may require manual tuning for optimal performance.</li>
+        <li><b>Hardware:</b> RL requires more training data and time due to real-world noise, but it can adapt to the system’s dynamics over time. PID is fast and effective in simple scenarios but may struggle with non-linearities and delays.</li>
+    </ul>
+</section>
+
+
+
+<section>
+    <h2>Code Snippets</h2>
+    <p>Below is an example of how the RL agent interacts with the environment using Python:</p>
+    <div class="code">
+        <pre>
+import gym
+import numpy as np
+
+# Create custom environment
+env = gym.make('BallBeam-v0')
+
+# Define RL agent
+# Example: DQN setup or PPO model
+
+# Training loop
+for episode in range(1000):
+    state = env.reset()
+    done = False
+    while not done:
+        action = agent.predict(state)
+        next_state, reward, done, _ = env.step(action)
+        # RL agent learning and updating model
+
+        </pre>
+    </div>
+</section>
+
+<section>
+    <h2>References</h2>
+    <ol>
+        <li><a href="https://towardsdatascience.com/reinforcement-learning-101-e24b50e1d292" target="_blank">Reinforcement Learning 101 - Towards Data Science</a></li>
+
+
+
+
+
+
+    </ol>
+</section>
+
+<footer style="font-size: 12px; padding: 10px; text-align: center;">
+    <p>&copy; 2025 Ball Beam Control Project</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ball Beam Control System: PID vs RL</title>
+    <!-- Linking Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            line-height: 1.6;
+        }
+        header {
+            background-color: #70c672; /* Changed header color */
+            color: white;
+            padding: 0px;
+            text-align: center;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Shadow for header */
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 0px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        h1, h2, h3 {
+            font-family: 'Roboto', sans-serif;
+            color: #333;
+        }
+
+        /* Sections */
+        section {
+            margin: 40px auto;
+            padding: 30px;
+            max-width: 900px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        section ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        section ul li {
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+        section img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Two-column layout */
+        .row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .column {
+            flex: 1;
+            min-width: 45%;
+        }
+
+        /* Code block styling */
+        .code {
+            background-color: #2e2e2e;
+            color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', Courier, monospace;
+            overflow-x: auto;
+        }
+        ul {
+        list-style-type: disc;  /* Ensures bullet points are shown */
+        margin-left: 20px;      /* Adds left margin for indentation */
+        }
+
+        li {
+            margin-bottom: 5px;     /* Adds space between each list item */
+        }
+        /* Button Styles */
+        button {
+            background-color: #4CAF50; 
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+
+        
+        /* Responsive Layout */
+        @media (max-width: 768px) {
+            .row {
+                flex-direction: column;
+            }
+            .column {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Ball Beam Control System: PID vs RL</h1>
+</header>
+
+<section>
+    <h2>Introduction</h2>
+    <p>This project aims to control a ball on a beam using both PID control and Reinforcement Learning (RL). The objective is to compare the two methods in terms of performance and suitability for real-time control in both simulation and hardware environments.</p>
+</section>
+
+<section>
+    <h2>Dashboard</h2>
+    <p>The dashboard provides a comprehensive user interface for the real-time monitoring and control of the ball beam control system. It offers various functionalities that allow users to customize settings, track logs, and control the entire process. The following are the key features:</p>
+    <img src="images/Dashboard.png" alt="Ball Beam Control System">
+
+    <ul>
+        <li><b>1. Select Options:</b> The dashboard allows users to choose between different control methods. You can select between:
+            <ul>
+                <ul>
+                <li><b>Train RL:</b> Start training the Reinforcement Learning (RL) agent using the defined settings.</li>
+                <li><b>Test RL:</b> Test a pre-trained RL agent to check its performance on the system.</li>
+                <li><b>PID Control:</b> Use a traditional PID controller to manage the ball beam system.</li>
+                <li><b>Train New Model from Simulation:</b> Train a new model based on data from the simulation environment.</li>
+                <li><b>Test Trained Model on Simulation:</b> Test an already trained RL model on a simulated environment to evaluate its performance.</li>
+            </ul>
+            </ul>
+        </li>
+
+        <li><b>2. Start and Stop Process:</b> The dashboard allows you to control the execution of the control process with the following options:
+            <ul>
+                <ul>
+                    <li><b>Start Process:</b> Once the parameters are configured, click this button to start the control process.</li>
+                    <li><b>Stop Process:</b> You can stop the running process at any time to halt the system's operation.</li>
+                </ul>
+            </ul>
+        </li>
+
+        <li><b>3. Settings:</b> Customize additional system parameters for both the RL agent and the PID controller. These settings include:
+            <ul>
+                <ul>
+                    <li><b>Set Episode Length:</b> Define the length of episodes during RL training.</li>
+                    <li><b>Set num_steps:</b> Specify the number of steps the agent should take in each episode.</li>
+                    <li><b>Setpoint:</b> Define the desired setpoint for the system, controlling the target position for the beam.</li>
+                    <li><b>Tolerance:</b> Set a tolerance value that determines the permissible deviation from the setpoint for control stability.</li>
+                    <li><b>PID Parameters:</b> Adjust the PID controller’s parameters (Kp, Ki, Kd) to fine-tune the system's response to control inputs.</li>
+            
+                </ul>
+            </ul>
+        </li>
+
+        <li><b>4. Advanced Settings:</b> Additional settings provide more fine-grained control for specialized tasks:
+            <ul>
+                <ul>
+                    <li><b>Use Pre-trained Agent:</b> You can opt to use a pre-trained RL agent for both hardware and simulation testing, which bypasses training from scratch.</li>
+                    <li><b>Use Reward Function (Advanced):</b> Enable or disable the advanced reward function during RL training to optimize agent learning based on system feedback.</li>
+                    <li><b>Render Option:</b> Option to render the simulation for visual feedback, useful for debugging or testing the system behavior visually.</li>
+                </ul>
+            </ul>
+        </li>
+
+        <li><b>5. PID Optimization:</b> The PID controller can be optimized for better performance through various optimization methods:
+            <ul>
+                <ul>
+                    <li><b>Optimize PID:</b> Activate PID optimization to allow the system to automatically adjust PID parameters based on optimization algorithms.</li>
+                    <li><b>Optimization Methods:</b> Choose from several available optimization methods such as Powell, Nelder-Mead, or COBYLA to enhance PID performance.</li>
+                </ul>
+            </ul>
+
+        </li>
+
+        <li><b>6. Logs:</b> View real-time logs for tracking the system’s status, performance, and error messages:
+            <ul>
+                <ul>
+                    <li><b>Real-time Logs:</b> Logs update in real-time and display important information related to the system's performance during training or testing.</li>
+                    <li><b>Process Status:</b> Track the start/stop status, error messages, and other important updates about the current process.</li>
+                </ul>
+            </ul>
+        </li>
+
+        <li><b>7. Current Settings:</b> Monitor the currently active settings in the system:
+            <ul>
+                <ul>
+                    <li><b>Settings Table:</b> A live table that displays all the active settings and their current values, so you can quickly review the configuration of the system.</li>
+                </ul>
+            </ul>
+        </li>
+
+
+
+    </ul>
+</section>
+
+
+<section>
+    <div class="row">
+        <div class="column">
+            <h3>Hardware Setup</h3>
+            <p>The hardware setup includes a physical beam, a motor, and a sensor to detect the ball's position. A DC motor or servo motor controls the beam's angle. A Flask server is used to send commands to the actuator based on the control algorithm (PID or RL).</p>
+            <img src="https://www.gurski.biz/Ball/24c.jpg" alt="Hardware Setup">
+        </div>
+        <div class="column">
+            <h3>Simulation Setup</h3>
+            <p>The simulation environment replicates the real-world setup using a software model. It allows us to test and optimize the PID controller and RL agent before deploying them to the hardware. The simulation provides a safe environment for experimenting with various control strategies.</p>
+            <img src="images/simulation.png" alt="Simulation Model">
+        </div>
+        <section>
+                <h3>Flask Server Integration</h3>
+                <ul>
+                    <p>The Flask server serves as the communication bridge between the RL/PID controllers and the hardware. The server sends control commands to the actuator and receives feedback from the sensors. This allows for real-time control and monitoring of the system.</p>
+                    <h4>Communication Between RL/PID and Hardware:</h4>
+                    <p>The Flask server runs on a separate PC, which is connected to the hardware. The RL and PID controllers run on another PC, communicating with the Flask server via HTTP requests.</p>
+                    <img src="images/architecture.png" alt="Flask Server Architecture">
+                </ul>
+            </ul>
+        </section>
+    </div>
+</section>
+
+<section>
+    <h2>PID Control</h2>
+    <ul>
+        <p>PID control adjusts the beam angle based on the current position of the ball. The control algorithm uses three components:</p>
+        <ul>
+            <li><b>Proportional (P):</b> Corrects based on the current error (distance from the setpoint).</li>
+            <li><b>Integral (I):</b> Corrects accumulated past errors to eliminate steady-state errors.</li>
+            <li><b>Derivative (D):</b> Corrects based on the rate of change of the error to anticipate future behavior.</li>
+        </ul>
+    </ul>
+    <h2>PID Optimization</h2>
+    <ul> 
+        <p>The PID parameters (Kp, Ki, Kd) are tuned through experimentation using optimization algorithms, specifically from the <strong>scipy optimization library</strong>. The goal is to find the best values for the proportional (Kp), integral (Ki), and derivative (Kd) gains that minimize the error in the system.</p>
+        <p>The optimization process is conducted in two stages: first in a <strong>simulation environment</strong>, where the PID controller’s performance can be tested and adjusted; and second on the <strong>hardware system</strong>, where real-time feedback is gathered.</p>
+        <p> <strong>Methods from scipy.optimize.minimize:</strong></p>
+        <ul>
+            <li><strong>Powell:</strong> A good choice for derivative-free optimization.</li> 
+            <li><strong>Nelder-Mead:</strong>  A simple, direct search method, good for unconstrained optimization.</li>
+            <li><strong>L-BFGS-B:</strong> Suitable for bounded problems and can handle constraints on parameters.</li>
+            <li><strong>TNC:</strong> (Truncated Newton Conjugate Gradient): Works well with bound constraints.</li>
+            <li><strong>COBYLA:</strong> Suitable for constraint optimization problems where derivatives are not available.</li>
+            <li><strong>SLSQP:</strong> Handles both equality and inequality constraints.</li>
+            <li><strong>BFGS:</strong> A quasi-Newton method, which works well for unconstrained optimization.</li>
+        </ul>
+    </ul>
+
+    <div style="text-align: center;">
+        <img src="images/plot_parameters_errors.png" alt="Simulation Model" style="max-height: 350px; width: auto;">
+        <img src="images/PID_tuned_results.png" alt="Simulation Model" style="max-height: 350px; width: auto;">
+    </div>
+
+</section>
+
+<section>
+    <h2>Reinforcement Learning</h2>
+    <p>In reinforcement learning (RL), an agent interacts with the environment to learn how to achieve its goal by maximizing a reward function. The ball-beam system's RL agent learns to balance the ball by adjusting the beam's angle.</p>
+
+    <h3>RL Model Architecture</h3>
+    <ul>
+        <li>The RL model uses algorithms like Deep Q-Network (DQN) or Proximal Policy Optimization (PPO), with a neural network architecture to approximate the value function or policy.</li>
+    </ul>
+
+    <h3>Steps to train RL Agent</h3>
+    <ul>
+        <li>
+            <h4>1. Creating the RL Environment</h4>
+            <ul>
+                <li>The RL environment is defined using the <strong>gym</strong> library or a custom-built environment. The state space includes variables like the ball's position and velocity, while the action space corresponds to possible adjustments to the beam's angle.</li>
+                <li>
+                    <h5>Action space</h5>
+                    <ul>
+                        <li>It gives a range of possible values for the agent to take action in different states.</li>
+                    </ul>
+                </li>
+                <li>
+                    <h5>Observation space</h5>
+                    <ul>
+                        <li>It defines the parameters that need to be observed after taking action. In our case, it includes the ball position, current angle, and velocity of the ball.</li>
+                    </ul>
+                </li>
+                <li>
+                    <h5>Step function</h5>
+                    <ul>
+                        <li>The step function is called when the model takes action. After each action, the new observation is captured, and the reward is calculated and returned to the model.</li>
+                    </ul>
+                </li>
+                <li>
+                    <h5>Creating reward function</h5>
+                    <ul>
+                        <li>A reward function needs to be created based on the system's requirements. This function gives feedback to the model for each action taken, guiding it toward the optimal behavior.</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+
+        <li>
+            <h4>2. Model creation</h4>
+            <ul>
+                <li>Using the stable_baselines library, the RL agent is created. This framework offers predefined algorithms and environments for training reinforcement learning models.</li>
+            </ul>
+        </li>
+
+        <li>
+            <h4>3. Start Training the Agent</h4>
+            <ul>
+                <li>Initially, the agent takes random actions, exploring the environment. It learns from the observations and stores the rewards generated based on the reward function.</li>
+                <li>The agent employs exploration and exploitation techniques during training to strike a balance between trying new actions and leveraging learned behaviors.</li>
+            </ul>
+        </li>
+
+        <li>
+            <h4>4. Testing the Agent</h4>
+            <ul>
+                <li>Once the agent is trained, it is tested to assess its performance and accuracy in balancing the ball on the beam.</li>
+            </ul>
+        </li>
+    </ul>
+</section>
+
+
+
+
+<section>
+    <h2>Code Snippets</h2>
+    <p>Below is an example of how the RL agent interacts with the environment using Python. This snippet includes creating a custom environment, defining an RL agent, and the training loop for the agent to learn how to balance the ball using reinforcement learning.</p>
+    
+    <div class="code">
+        <pre>
+            # Import necessary libraries
+            import gym
+            import numpy as np
+            from stable_baselines3 import PPO
+
+            # Create custom environment (Ball-Beam system)
+            env = gym.make('BallBeam-v0')
+
+            # Initialize the RL agent (using PPO algorithm from stable_baselines3)
+            model = PPO('MlpPolicy', env, verbose=1)  # MlpPolicy uses a multi-layer perceptron policy
+
+            # Training loop: Training the agent over multiple episodes
+            for episode in range(1000):
+                state = env.reset()  # Reset the environment to start a new episode
+                done = False
+                total_reward = 0  # Track the total reward for each episode
+                
+                # Run the episode
+                while not done:
+                    action, _states = model.predict(state)  # Predict the next action based on the current state
+                    next_state, reward, done, info = env.step(action)  # Take the action, and get the next state and reward
+                    
+                    # Learn from the transition
+                    model.learn(total_timesteps=1)  # Learn after each step for faster adaptation (this can be adjusted)
+                    
+                    # Update the state for the next iteration
+                    state = next_state
+                    total_reward += reward  # Accumulate the reward
+                    
+                print(f"Episode {episode + 1}: Total Reward = {total_reward}")
+
+            # Save the trained model after training
+            model.save("ppo_ball_beam")
+            print("Model training complete and saved.")
+        </pre>
+    </div>
+</section>
+
+<section>
+    <h2>References</h2>
+    <ol>
+        <li><a href="https://towardsdatascience.com/reinforcement-learning-101-e24b50e1d292" target="_blank">Reinforcement Learning 101 - Towards Data Science</a></li>
+    </ol>
+</section>
+
+<button onclick="window.location.href='#'">Contact</button>
+
+<footer>
+    <p>&copy; 2025 Ball Beam Control System Project | Muhammad Ali</p>
+</footer>
+
+</body>
+</html>
