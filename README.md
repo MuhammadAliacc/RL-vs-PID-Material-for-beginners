@@ -4,10 +4,10 @@ This project demonstrates how to use **Reinforcement Learning (RL)** to control 
 
 Implementation is based on simulation as well as on hardware.
 
-<img src="images/architecture.png" alt="architecture" width="500" height="100"/>
+<img src="images/architecture.png" alt="architecture" height="200"/>
 
 ## Dashboard Overview
-<img src="images/Dashboard.png" alt="Dashboard" width="500" height="100"/>
+<img src="images/Dashboard.png" alt="Dashboard" height="200"/>
 
 The **Dashboard** is the user interface that allows you to monitor and control the ball-beam system in real time. The dashboard offers the following functionalities:
 
@@ -19,10 +19,10 @@ The **Dashboard** is the user interface that allows you to monitor and control t
 ## Features
 
 ### PID
-<img src="images/PID_tuned_results.png" alt="PID_tuned_results" width="500" height="100"/>
+<img src="images/PID_tuned_results.png" alt="PID_tuned_results"  height="200"/>
 
 ### Optimisation of PID Hyperparameter 
-<img src="images/plot_parameters_errors.png" alt="plot_parameters_errors" width="500" height="100"/>
+<img src="images/plot_parameters_errors.png" alt="plot_parameters_errors" height="200"/>
 
 ### Reinforcement Learning Model
 The RL agent interacts with the environment to learn how to balance the ball on the beam by maximizing a reward function.
