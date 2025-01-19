@@ -4,7 +4,7 @@ This project demonstrates how to use **Reinforcement Learning (RL)** to control 
 
 Implementation is based on simulation as well as on hardware.
 <div align="center">
-    <img src="images/architecture.png" alt="architecture" height="200"/>
+    <img src="images/architecture.png" alt="architecture" height="250"/>
 </div>
 
 ## Dashboard Overview
