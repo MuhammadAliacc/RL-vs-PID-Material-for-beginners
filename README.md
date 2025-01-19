@@ -26,6 +26,8 @@ The **Dashboard** is the user interface that allows you to monitor and control t
 
 <div align="center">
     ### Optimisation of PID Hyperparameter 
+</div>
+<div align="center">
     <img src="images/plot_parameters_errors.png" alt="plot_parameters_errors" height="250"/>
 </div>
 
